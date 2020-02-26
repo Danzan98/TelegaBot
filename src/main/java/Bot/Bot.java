@@ -1,5 +1,7 @@
 package Bot;
 
+import Parser.Dict;
+import Parser.Pusher;
 import Parser.UrlParser;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
@@ -18,8 +20,10 @@ public class Bot extends TelegramLongPollingBot {
 
     private String urlPattern = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
     private String commandPattern ="^/[a-z]*";
-    UrlParser urlParser;
+    UrlParser urlParser = new UrlParser();
+    Pusher pusher = new Pusher();
     SendMessage sendMessage = new SendMessage();
+    Dict dict = new Dict();
     /* Обработка входящего сообщения */
     @Override
     public void onUpdateReceived(Update update) {
@@ -27,9 +31,9 @@ public class Bot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             // switch case TO DO
             if (message.getText().matches(urlPattern)){
-                urlParser = new UrlParser(message.getText());
-                setInline(urlParser.getList());
-                sendMsg(message, "Choose the price of the product");
+                urlParser.parsingSite(message.getText());
+                dict.addItem(message.getText(), urlParser.getCurrentPrice());
+                pusher.pushNotifies(message, dict);
             }
             else if (message.getText().matches(commandPattern)){
                 sendMsg(message, "It's a command");
@@ -39,7 +43,7 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
         else if (update.hasCallbackQuery()){
-            
+            System.out.println(update.getCallbackQuery().getData());
         }
 
     }
@@ -102,5 +106,6 @@ public class Bot extends TelegramLongPollingBot {
         markupKeyboard.setKeyboard(arrayButtons);
         sendMessage.setReplyMarkup(markupKeyboard);
     }
+
 
 }
