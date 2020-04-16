@@ -29,6 +29,9 @@ public class UrlParser {
         else if (URL.matches("farfetch")){
             //TODO
         }
+        else if (URL.matches("sberometer")){
+            nameOfElement = "curr_usd";
+        }
         currentPrice = 0;
         try {
             Document doc = Jsoup.connect(URL)
@@ -38,6 +41,7 @@ public class UrlParser {
             Element listElemetns = doc.body();
             for(Element element : listElemetns.getAllElements()) {
                 if (element.className().equals(nameOfElement)) {
+                    System.out.println(element.text());
                     currentPrice = Integer.parseInt(element.text().split(patternForNumeric)[0].replaceAll("\\s", ""));
                 }
             }
