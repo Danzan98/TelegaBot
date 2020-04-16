@@ -29,9 +29,6 @@ public class UrlParser {
         else if (URL.matches("farfetch")){
             //TODO
         }
-        else if (URL.matches("sberometer")){
-            nameOfElement = "curr_usd";
-        }
         currentPrice = 0;
         try {
             Document doc = Jsoup.connect(URL)
