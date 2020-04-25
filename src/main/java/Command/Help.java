@@ -2,7 +2,10 @@ package Command;
 
 public class Help {
 
-    public Help(){
-        //TODO
+    String command;
+
+    public Help(String command){
+        this.command = command;
+
     }
 }

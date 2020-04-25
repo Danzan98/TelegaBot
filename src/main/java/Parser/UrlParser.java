@@ -1,6 +1,5 @@
 package Parser;
 
-import Bot.Bot;
 import org.jsoup.nodes.Document;
 import org.jsoup.Jsoup;
 
@@ -35,8 +34,7 @@ public class UrlParser {
                     .userAgent("Chrome/4.0.249.0 Safari/532.5")
                     .referrer("http://www.google.com")
                     .get();
-            Element listElemetns = doc.body();
-            for(Element element : listElemetns.getAllElements()) {
+            for(Element element : doc.body().getAllElements()) {
                 if (element.className().equals(nameOfElement)) {
                     currentPrice = Integer.parseInt(element.text().split(patternForNumeric)[0].replaceAll("\\s", ""));
                 }

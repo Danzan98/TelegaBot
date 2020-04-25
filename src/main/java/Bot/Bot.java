@@ -1,7 +1,6 @@
 package Bot;
 
 import Parser.Dict;
-import Parser.Pusher;
 import Parser.UrlParser;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
@@ -15,13 +14,17 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Bot extends TelegramLongPollingBot {
 
     private String urlPattern = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
     private String commandPattern ="^/[a-z]*";
     UrlParser urlParser = new UrlParser();
-    Pusher pusher = new Pusher();
     SendMessage sendMessage = new SendMessage();
     Dict dict = new Dict();
     /* Обработка входящего сообщения */
@@ -32,8 +35,9 @@ public class Bot extends TelegramLongPollingBot {
             // switch case TO DO
             if (message.getText().matches(urlPattern)){
                 urlParser.parsingSite(message.getText());
+                sendMsg(message, String.valueOf(urlParser.getCurrentPrice()));
                 dict.addItem(message.getText(), urlParser.getCurrentPrice());
-                pusher.pushNotifies(message, dict);
+                NotifyUser(message, dict);
             }
             else if (message.getText().matches(commandPattern)){
                 sendMsg(message, "It's a command");
@@ -65,9 +69,11 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken() {
+    public String getBotToken()
+    {
         return "1067129429:AAGsji9kFmlbkAXSPxR8yZmxzWVOlZh5aBQ";
     }
+
     public synchronized void setButtons() {
         // Создаем клавиуатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -105,6 +111,25 @@ public class Bot extends TelegramLongPollingBot {
         InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
         markupKeyboard.setKeyboard(arrayButtons);
         sendMessage.setReplyMarkup(markupKeyboard);
+    }
+
+    /*Уведомление пользователя при изменении цены*/
+    int oldPrice;
+    private final ScheduledExecutorService scheduler =
+            Executors.newScheduledThreadPool(1);
+    public void NotifyUser(Message message, Dict dictionary){
+        oldPrice = 0;
+        Runnable checkPrice = () -> {
+            for (Map.Entry<String, Integer> entry : dictionary.getAllItems()) {
+                oldPrice = entry.getValue();
+                urlParser.parsingSite(entry.getKey());
+                if (oldPrice > urlParser.getCurrentPrice()) {
+                    sendMsg(message, "Wave " + entry.getKey() + " getCurrentPrice: " + urlParser.getCurrentPrice());
+                }
+            }
+        };
+        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(checkPrice, 0, 3600, TimeUnit.SECONDS);
+
     }
 
 
