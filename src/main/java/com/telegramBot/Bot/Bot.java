@@ -1,11 +1,8 @@
-package Bot;
+package com.telegramBot.Bot;
 
-import Parser.Dict;
-import Parser.UrlParser;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -20,28 +17,32 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import com.telegramBot.Parser.*;
+import com.telegramBot.Patterns;
 
 public class Bot extends TelegramLongPollingBot {
-
-    private String urlPattern = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-    private String commandPattern ="^/[a-z]*";
-    UrlParser urlParser = new UrlParser();
+    /*   */
     SendMessage sendMessage = new SendMessage();
+    /* Parser of sites  */
+    UrlParser urlParser = new UrlParser();
+    /* Initialize a dictionary  */
     Dict dict = new Dict();
+
     /* Обработка входящего сообщения */
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()){
             Message message = update.getMessage();
             // switch case TO DO
-            if (message.getText().matches(urlPattern)){
+            if (message.getText().matches(Patterns.urlPattern)){
                 urlParser.parsingSite(message.getText());
                 sendMsg(message, String.valueOf(urlParser.getCurrentPrice()));
-                dict.addItem(message.getText(), urlParser.getCurrentPrice());
-                NotifyUser(message, dict);
+                dict.addItem(message.getChatId(), message.getText(), urlParser.getCurrentPrice());
+                notifyUser(message, dict);
             }
-            else if (message.getText().matches(commandPattern)){
-                sendMsg(message, "It's a command");
+            else if (message.getText().matches(Patterns.commandPattern)){
+                String feedback = baseCommands(message);
+                sendMsg(message, feedback);
             }
             else {
                 sendMsg(message, "It's not a URL");
@@ -118,10 +119,10 @@ public class Bot extends TelegramLongPollingBot {
     int oldPrice;
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
-    public void NotifyUser(Message message, Dict dictionary){
+    public void notifyUser(Message message, Dict dictionary){
         oldPrice = 0;
         Runnable checkPrice = () -> {
-            for (Map.Entry<String, Integer> entry : dictionary.getAllItems()) {
+            for (Map.Entry<String, Integer> entry : dictionary.getAllItems(message.getChatId())) {
                 oldPrice = entry.getValue();
                 urlParser.parsingSite(entry.getKey());
                 if (oldPrice > urlParser.getCurrentPrice()) {
@@ -131,6 +132,31 @@ public class Bot extends TelegramLongPollingBot {
         };
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(checkPrice, 0, 3600, TimeUnit.SECONDS);
 
+    }
+
+    /* Базовые команды для пользователя */
+    private String baseCommands(Message message){
+        String response = "";
+       switch (message.getText()){
+           case "/start":
+               response = "Hi! I'm a bot which will notify you when the price of specified clothes or shoes is changed";
+               break;
+           case "/help":
+               response = "Specify a link to the product for adding it to the shopping list";
+               break;
+           case "/shoppingList":
+               for (Map.Entry<String, Integer> entry : dict.getAllItems(message.getChatId())) {
+                   System.out.println("Product: " + entry.getKey() + " Price: " + entry.getValue() + "\n");
+                   response = response + "Product: " + entry.getKey() + " Price: " + entry.getValue() + "\n";
+               }
+               if (response.equals(""))
+                   response = "Your shopping list is empty";
+               break;
+           default:
+               response = "I don't know this command.";
+               break;
+       }
+       return response;
     }
 
 

@@ -4,22 +4,31 @@ plugins {
 }
 
 group 'com.end'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 sourceCompatibility = 1.8
 application {
-    mainClassName = 'Main'
+    mainClassName = 'com.telegramBot.Main'
 }
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'org.telegram', name: 'telegrambots', version: '3.6'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.telegram:telegrambots:3.6'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 task stage {
     dependsOn installDist
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.telegramBot.Main'
+        )
+    }
+}
+
