@@ -1,42 +1,35 @@
 package com.telegramBot.Parser;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import org.telegram.telegrambots.api.objects.Message;
+
+import java.util.*;
 
 public class Dict {
+
     public Dict() {}
 
-    private Map<Long, Map<String, Integer>> items = new HashMap<>();
-    private HashMap<String, Integer> Items = new HashMap<>();
+    private static Map<Long, List<Item>> items = new HashMap<>();
 
-    public void addItem (Long chatId, String link, Integer price) {
-        items.put(chatId, new HashMap<String, Integer>(){{put(link, price);}});
-    }
-    public void addItem(String link, Integer price){
-        Items.put(link, price);
+    public void addItem (Message message, Integer price) {
+        Long chatId = message.getChatId();
+        String link = message.getText();
+        items.computeIfAbsent(chatId, k -> new ArrayList<>()).add(new Item(link, price));
     }
 
-    public Integer getPriceOfItem(String link){
-        return Items.get(link);
+    // TODO
+    public void deleteItem(Message message){
+        Long chatId = message.getChatId();
+        String link = message.getText();
+        items.remove(link);
     }
 
-    public void deleteItem(String link){
-        Items.remove(link);
+    public List<Item> getAllItems(Long chatId){
+        return items.get(chatId);
     }
 
-    public Set<Map.Entry<String, Integer>> getAllItems(){
-        return Items.entrySet();
-    }
-
-    public Set<Map.Entry<String, Integer>> getAllItems(Long chatId){
-        System.out.println("ChatId: " + items.get(chatId).entrySet().toString());
-        return items.get(chatId).entrySet();
-    }
-
-
-    public boolean existItem(String link){
-        return Items.containsKey(link);
+    // TODO
+    public boolean existItem(Long chatId, String link){
+        return true; //items.get(chatId);
     }
 
 }

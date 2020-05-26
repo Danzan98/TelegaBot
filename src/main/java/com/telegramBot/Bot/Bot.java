@@ -35,9 +35,13 @@ public class Bot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             // switch case TO DO
             if (message.getText().matches(Patterns.urlPattern)){
-                urlParser.parsingSite(message.getText());
+
+                String nameOfSite = message.getText();
+                urlParser.parsingSite(nameOfSite);
+
                 sendMsg(message, String.valueOf(urlParser.getCurrentPrice()));
-                dict.addItem(message.getChatId(), message.getText(), urlParser.getCurrentPrice());
+
+                dict.addItem(message, urlParser.getCurrentPrice());
                 notifyUser(message, dict);
             }
             else if (message.getText().matches(Patterns.commandPattern)){
@@ -46,6 +50,7 @@ public class Bot extends TelegramLongPollingBot {
             }
             else {
                 sendMsg(message, "It's not a URL");
+                System.out.println("Incorrect message: " + message);
             }
         }
         else if (update.hasCallbackQuery()){
@@ -120,13 +125,14 @@ public class Bot extends TelegramLongPollingBot {
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
     public void notifyUser(Message message, Dict dictionary){
+        Long chatId = message.getChatId();
         oldPrice = 0;
         Runnable checkPrice = () -> {
-            for (Map.Entry<String, Integer> entry : dictionary.getAllItems(message.getChatId())) {
-                oldPrice = entry.getValue();
-                urlParser.parsingSite(entry.getKey());
+            for (Item entry : dictionary.getAllItems(chatId)) {
+                oldPrice = entry.getPrice();
+                urlParser.parsingSite(entry.getLink());
                 if (oldPrice > urlParser.getCurrentPrice()) {
-                    sendMsg(message, "Wave " + entry.getKey() + " getCurrentPrice: " + urlParser.getCurrentPrice());
+                    sendMsg(message, "Wave " + entry.getLink() + " getCurrentPrice: " + urlParser.getCurrentPrice());
                 }
             }
         };
@@ -136,6 +142,7 @@ public class Bot extends TelegramLongPollingBot {
 
     /* Базовые команды для пользователя */
     private String baseCommands(Message message){
+        Long chatId = message.getChatId();
         String response = "";
        switch (message.getText()){
            case "/start":
@@ -145,9 +152,9 @@ public class Bot extends TelegramLongPollingBot {
                response = "Specify a link to the product for adding it to the shopping list";
                break;
            case "/shoppingList":
-               for (Map.Entry<String, Integer> entry : dict.getAllItems(message.getChatId())) {
-                   System.out.println("Product: " + entry.getKey() + " Price: " + entry.getValue() + "\n");
-                   response = response + "Product: " + entry.getKey() + " Price: " + entry.getValue() + "\n";
+               for ( Item entry : dict.getAllItems(chatId)) {
+                   System.out.println("Product: " + entry.getLink()  + " Price: " + entry.getPrice() + "\n");
+                   response = response + "Product: " + entry.getLink() + " Price: " + entry.getPrice() + "\n";
                }
                if (response.equals(""))
                    response = "Your shopping list is empty";
