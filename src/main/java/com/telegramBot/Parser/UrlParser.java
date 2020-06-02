@@ -28,6 +28,9 @@ public class UrlParser {
         else if (URL.matches("farfetch")){
             //TODO
         }
+        else if (URL.matches("ozon")){
+
+        }
         currentPrice = 0;
         try {
             Document doc = Jsoup.connect(URL)

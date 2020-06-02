@@ -8,5 +8,7 @@ public interface Patterns {
 
     String lamoda = ".*www\\.lamoda\\.ru.*";
     String wb = ".*www\\.wildberries\\.ru.*";
+    String asos = ".*www\\.asos\\.com.*";
+    String ozon = "";
 
 }

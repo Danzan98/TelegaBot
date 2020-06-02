@@ -1,6 +1,6 @@
 package com.telegramBot.Parser;
 
-import org.telegram.telegrambots.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.*;
 
@@ -9,11 +9,16 @@ public class Dict {
     public Dict() {}
 
     private static Map<Long, List<Item>> items = new HashMap<>();
+    private static boolean exist = false;
 
     public void addItem (Message message, Integer price) {
         Long chatId = message.getChatId();
         String link = message.getText();
-        items.computeIfAbsent(chatId, k -> new ArrayList<>()).add(new Item(link, price));
+        exist = false;
+        if (!items.isEmpty())
+            items.get(chatId).forEach(item -> existItem(item.getLink(), link));
+        if (!exist)
+            items.computeIfAbsent(chatId, k -> new ArrayList<>()).add(new Item(link, price));
     }
 
     // TODO
@@ -27,9 +32,14 @@ public class Dict {
         return items.get(chatId);
     }
 
-    // TODO
-    public boolean existItem(Long chatId, String link){
-        return true; //items.get(chatId);
+    public boolean isEmpty(){
+        return items.isEmpty();
+    }
+
+    public boolean existItem(String linkInList, String searchLink){
+        if (linkInList.equals(searchLink) && !exist)
+            exist = true;
+        return exist;
     }
 
 }

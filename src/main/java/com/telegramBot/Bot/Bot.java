@@ -1,28 +1,26 @@
 package com.telegramBot.Bot;
 
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.objects.Message;
-import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import com.telegramBot.Parser.*;
 import com.telegramBot.Patterns;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-public class Bot extends TelegramLongPollingBot {
-    /*   */
-    SendMessage sendMessage = new SendMessage();
+public class Bot extends TelegramLongPollingBot  {
+
     /* Parser of sites  */
     UrlParser urlParser = new UrlParser();
     /* Initialize a dictionary  */
@@ -60,9 +58,11 @@ public class Bot extends TelegramLongPollingBot {
     }
     /* Отправляет сообщение пользователю */
     public void sendMsg(Message message, String text) {
+        SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setText(text);
+        setButtons(sendMessage);
         try {
             execute(sendMessage);
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class Bot extends TelegramLongPollingBot {
         return "1067129429:AAGsji9kFmlbkAXSPxR8yZmxzWVOlZh5aBQ";
     }
 
-    public synchronized void setButtons() {
+    public synchronized void setButtons(SendMessage sendMessage) {
         // Создаем клавиуатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -100,7 +100,7 @@ public class Bot extends TelegramLongPollingBot {
         // Вторая строчка клавиатуры
         KeyboardRow keyboardSecondRow = new KeyboardRow();
         // Добавляем кнопки во вторую строчку клавиатуры
-        keyboardSecondRow.add(new KeyboardButton("/settings"));
+        keyboardSecondRow.add(new KeyboardButton("/shoppingList"));
 
         // Добавляем все строчки клавиатуры в список
         keyboard.add(keyboardFirstRow);
@@ -109,6 +109,7 @@ public class Bot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
+    // TODO
     public void setInline(List<String> list){
         List<List<InlineKeyboardButton>> arrayButtons = new ArrayList<>();
         List<InlineKeyboardButton> buttons = new ArrayList<>();
@@ -117,7 +118,7 @@ public class Bot extends TelegramLongPollingBot {
         arrayButtons.add(buttons);
         InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
         markupKeyboard.setKeyboard(arrayButtons);
-        sendMessage.setReplyMarkup(markupKeyboard);
+     //   sendMessage.setReplyMarkup(markupKeyboard);
     }
 
     /*Уведомление пользователя при изменении цены*/
@@ -137,7 +138,6 @@ public class Bot extends TelegramLongPollingBot {
             }
         };
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(checkPrice, 0, 3600, TimeUnit.SECONDS);
-
     }
 
     /* Базовые команды для пользователя */
@@ -152,11 +152,13 @@ public class Bot extends TelegramLongPollingBot {
                response = "Specify a link to the product for adding it to the shopping list";
                break;
            case "/shoppingList":
-               for ( Item entry : dict.getAllItems(chatId)) {
+               if (!dict.isEmpty()){
+                 for ( Item entry : dict.getAllItems(chatId)) {
                    System.out.println("Product: " + entry.getLink()  + " Price: " + entry.getPrice() + "\n");
                    response = response + "Product: " + entry.getLink() + " Price: " + entry.getPrice() + "\n";
+                 }
                }
-               if (response.equals(""))
+               else
                    response = "Your shopping list is empty";
                break;
            default:
