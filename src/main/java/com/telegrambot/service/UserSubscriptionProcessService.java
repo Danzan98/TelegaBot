@@ -29,9 +29,11 @@ public class UserSubscriptionProcessService {
 
     private void processSubscription(UserSubscription subscription) {
         Item item = webParserService.getItem(subscription.getLink());
-        if (subscription.getPrice() < item.getPrice()) {
+        if (item.getPrice() < subscription.getPrice()) {
+            subscription.setPrice(item.getPrice());
             StringBuilder notificationMessage = new StringBuilder(messagesService.getReplyText("subscription.trainTicketsPriceChanges",
-                    subscription.getLink(), subscription.getPrice(), subscription.getLink()));
+                    subscription.getName(), subscription.getPrice(), subscription.getLink()));
+            subscriptionService.saveUserSubscription(subscription);
             telegramBot.sendMessage(subscription.getChatId(), notificationMessage.toString());
         }
     }

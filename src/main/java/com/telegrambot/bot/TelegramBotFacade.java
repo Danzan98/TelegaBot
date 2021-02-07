@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 @Slf4j
 @AllArgsConstructor
 public class TelegramBotFacade {
-    private UserDataCache userDataCache;
-    private BotStateContext botStateContext;
-    private CallbackQueryFacade callbackQueryFacade;
+    private final UserDataCache userDataCache;
+    private final BotStateContext botStateContext;
+    private final CallbackQueryFacade callbackQueryFacade;
 
     public SendMessage handleUpdate(Update update) {
         SendMessage replyMessage = null;

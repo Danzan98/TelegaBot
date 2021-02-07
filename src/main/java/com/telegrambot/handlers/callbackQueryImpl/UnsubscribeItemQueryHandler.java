@@ -31,18 +31,15 @@ public class UnsubscribeItemQueryHandler implements CallbackQueryHandler {
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
         final long chatId = callbackQuery.getMessage().getChatId();
 
+        String link = findLink(callbackQuery.getMessage().getText());
 
-        Optional<UserSubscription> optionalUserSubscription = subscriptionService.getUserSubscriptionByIdAndLink(chatId, "");
+        Optional<UserSubscription> optionalUserSubscription = subscriptionService.getUserSubscriptionByIdAndLink(chatId, link);
         if (optionalUserSubscription.isEmpty()) {
-            return messagesService.getReplyMessage(chatId, "reply.query.item.userHasNoSubscription");
+            return messagesService.getReplyMessage(chatId, "reply.subscriptions.userHasNoSubscriptions");
         }
 
         UserSubscription userSubscription = optionalUserSubscription.get();
         subscriptionService.deleteUserSubscription(userSubscription.getId());
-
-//        telegramBot.sendChangedInlineButtonText(callbackQuery,
-//                String.format("%s %s", Emojis.SUCCESS_UNSUBSCRIBED, UserChatButtonStatus.UNSUBSCRIBED),
-//                CallbackQueryType.QUERY_PROCESSED.name());
 
         return messagesService.getReplyMessage(chatId, "reply.query.item.unsubscribed", userSubscription.getName());
     }
@@ -50,5 +47,10 @@ public class UnsubscribeItemQueryHandler implements CallbackQueryHandler {
     @Override
     public CallbackQueryType getHandlerQueryType() {
         return CallbackQueryType.UNSUBSCRIBE;
+    }
+
+    private String findLink (String text) {
+        String[] subString = text.split("\\s");
+        return subString[subString.length - 1];
     }
 }
