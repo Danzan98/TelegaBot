@@ -39,7 +39,8 @@ public class AddItemHandler implements InputMessageHandler {
             return messagesService.getReplyMessage(message.getChatId(), "reply.query.item.userHasSubscription");
 
         UserSubscription subscription = subscriptionMapper.toSubscription(item);
-
+        subscription.setChatId(message.getChatId());
+        userSubscriptionService.saveUserSubscription(subscription);
         return messagesService.getReplyMessage(message.getChatId(),
                 "reply.query.item.subscribed", subscription.getName());
     }

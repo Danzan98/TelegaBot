@@ -13,7 +13,7 @@ import lombok.Setter;
 @Table(name = "user_subscription")
 public class UserSubscription {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     private long chatId;
