@@ -6,10 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum WebPage {
-    LAMODA(".*www\\.lamoda\\.ru.*"),
-    WILDBERRIES(".*www\\.wildberries\\.ru.*"),
-    ASOS(".*www\\.asos\\.com.*"),
-    FARFETCH("");
+    LAMODA(".*\\.lamoda\\.ru.*"),
+    WILDBERRIES(".*\\.wildberries\\.ru.*"),
+//    ASOS(".*\\.asos\\.com.*"),
+    FARFETCH(".*\\.farfetch\\.com.*"),
+    OZON(".*\\.ozon.ru.*");
 
     private final String url;
 }

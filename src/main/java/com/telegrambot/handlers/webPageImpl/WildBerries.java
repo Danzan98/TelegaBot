@@ -10,27 +10,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Lamoda implements WebPageHandler {
+public class WildBerries implements WebPageHandler {
 
     @Override
     public Item handleWebPage(Document document) {
         try {
-            Element elementTitle = document.selectFirst("h1.product-title__brand-name");
-            Element elementPrice = document.selectFirst("div.product-prices");
-            String brand = elementTitle.ownText();
-            String itemName = elementTitle.child(0).text();
-            int amountOfChildren = elementPrice.childrenSize();
-            Double price = Double.valueOf(elementPrice.child(amountOfChildren - 1).text().replaceAll("\\D+", ""));
+            Element elementBrand = document.selectFirst("span.brand");
+            Element elementItem = document.selectFirst("span.name");
+            Element elementPrice = document.selectFirst("span.final-cost");
+            String brand = elementBrand.ownText();
+            String itemName = elementItem.ownText();
+            Double price = Double.valueOf(elementPrice.text().replaceAll("\\D+", ""));
             return new Item(null, brand, itemName, price);
         }
         catch (Exception e) {
-            log.error("Error while parsing lamoda " + e);
+            log.error("Error while parsing wildBerries " + e);
             return null;
         }
     }
 
     @Override
     public WebPage getWebPageHandler() {
-        return WebPage.LAMODA;
+        return WebPage.WILDBERRIES;
     }
 }

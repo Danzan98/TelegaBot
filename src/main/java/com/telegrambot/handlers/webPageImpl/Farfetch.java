@@ -10,27 +10,28 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Lamoda implements WebPageHandler {
+public class Farfetch implements WebPageHandler {
 
     @Override
     public Item handleWebPage(Document document) {
         try {
-            Element elementTitle = document.selectFirst("h1.product-title__brand-name");
-            Element elementPrice = document.selectFirst("div.product-prices");
-            String brand = elementTitle.ownText();
-            String itemName = elementTitle.child(0).text();
-            int amountOfChildren = elementPrice.childrenSize();
-            Double price = Double.valueOf(elementPrice.child(amountOfChildren - 1).text().replaceAll("\\D+", ""));
+            Element product = document.selectFirst("h1._d561bf");
+            Element elementBrand = product.child(0);
+            Element elementItem = product.child(1);
+            Element elementPrice = document.selectFirst("div._7dad7e");
+            String brand = elementBrand.text();
+            String itemName = elementItem.text();
+            Double price = Double.valueOf(elementPrice.text().replaceAll("\\D+", ""));
             return new Item(null, brand, itemName, price);
         }
         catch (Exception e) {
-            log.error("Error while parsing lamoda " + e);
+            log.error("Error while parsing farfetch " + e);
             return null;
         }
     }
 
     @Override
     public WebPage getWebPageHandler() {
-        return WebPage.LAMODA;
+        return WebPage.FARFETCH;
     }
 }
