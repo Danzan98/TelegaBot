@@ -1,0 +1,35 @@
+server.port: 5000
+
+localeTag: ru-RU
+
+logging:
+  level:
+    root: info
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+  file:
+    path: /logs/bot
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:qwerty}
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+
+telegrambot:
+  userName: Testing558Bot
+  botToken: 1067129429:AAGsji9kFmlbkAXSPxR8yZmxzWVOlZh5aBQ
+  webHookPath: https://checkingpricebot.herokuapp.com
+
+subscriptions.processPeriod: 1800000
+
+pingtask:
+  url: https://www.google.com
+  period: 1200000
