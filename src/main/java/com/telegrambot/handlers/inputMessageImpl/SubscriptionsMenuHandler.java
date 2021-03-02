@@ -38,7 +38,7 @@ public class SubscriptionsMenuHandler implements InputMessageHandler {
 
         Optional<List<UserSubscription>> usersSubscriptions = subscribeService.getUserSubscriptions(message.getChatId());
 
-        if (usersSubscriptions.isEmpty()) {
+        if (!usersSubscriptions.isPresent()) {
             userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
             return messagesService.getReplyMessage(message.getChatId(), "reply.subscriptions.userHasNoSubscriptions");
         }

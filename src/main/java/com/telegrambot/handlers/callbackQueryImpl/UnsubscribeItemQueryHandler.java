@@ -34,7 +34,7 @@ public class UnsubscribeItemQueryHandler implements CallbackQueryHandler {
         String link = findLink(callbackQuery.getMessage().getText());
 
         Optional<UserSubscription> optionalUserSubscription = subscriptionService.getUserSubscriptionByIdAndLink(chatId, link);
-        if (optionalUserSubscription.isEmpty()) {
+        if (!optionalUserSubscription.isPresent()) {
             return messagesService.getReplyMessage(chatId, "reply.subscriptions.userHasNoSubscriptions");
         }
 
