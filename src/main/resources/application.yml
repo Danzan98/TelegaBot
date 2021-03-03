@@ -26,7 +26,7 @@ spring:
 telegrambot:
   userName: Testing558Bot
   botToken: 1067129429:AAGsji9kFmlbkAXSPxR8yZmxzWVOlZh5aBQ
-  webHookPath: https://checkingpricebot.herokuapp.com
+  webHookPath: https://checkingpricebot.herokuapp.com/
 
 subscriptions.processPeriod: 1800000
 
