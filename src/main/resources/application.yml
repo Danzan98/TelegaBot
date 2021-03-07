@@ -29,7 +29,3 @@ telegrambot:
   webHookPath: https://checkingpricebot.herokuapp.com/
 
 subscriptions.processPeriod: 1800000
-
-pingtask:
-  url: https://www.google.com
-  period: 1200000
