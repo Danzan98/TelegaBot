@@ -1,6 +1,6 @@
 package com.telegrambot.handlers.inputMessageImpl;
 
-import com.telegrambot.cache.UserDataCache;
+import com.telegrambot.cache.DataCache;
 import com.telegrambot.handlers.InputMessageHandler;
 import com.telegrambot.mapper.UserSubscriptionMapper;
 import com.telegrambot.model.Item;
@@ -8,7 +8,7 @@ import com.telegrambot.model.UserSubscription;
 import com.telegrambot.model.enumeration.BotState;
 import com.telegrambot.service.ReplyMessagesService;
 import com.telegrambot.service.UserSubscriptionService;
-import com.telegrambot.service.WebParserService;
+import com.telegrambot.service.impl.WebParserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,8 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Component
 @AllArgsConstructor
 public class AddItemHandler implements InputMessageHandler {
-    private final UserDataCache userDataCache;
-    private final WebParserService webParserService;
+    private final DataCache userDataCache;
+    private final WebParserServiceImpl webParserService;
     private final UserSubscriptionService userSubscriptionService;
     private final ReplyMessagesService messagesService;
     private final UserSubscriptionMapper subscriptionMapper;

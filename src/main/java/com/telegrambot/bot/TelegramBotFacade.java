@@ -1,6 +1,6 @@
 package com.telegrambot.bot;
 
-import com.telegrambot.cache.UserDataCache;
+import com.telegrambot.cache.DataCache;
 import com.telegrambot.model.enumeration.BotState;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @AllArgsConstructor
 public class TelegramBotFacade {
-    private final UserDataCache userDataCache;
+    private final DataCache userDataCache;
     private final BotStateContext botStateContext;
     private final CallbackQueryFacade callbackQueryFacade;
 
@@ -41,7 +41,7 @@ public class TelegramBotFacade {
 
     private SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
-        int userId = message.getFrom().getId();
+        Long userId = message.getFrom().getId();
         BotState botState;
         SendMessage replyMessage;
 

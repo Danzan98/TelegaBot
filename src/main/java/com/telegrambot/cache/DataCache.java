@@ -2,7 +2,7 @@ package com.telegrambot.cache;
 import com.telegrambot.model.enumeration.BotState;
 
 public interface DataCache {
-    void setUsersCurrentBotState(int userId, BotState botState);
+    void setUsersCurrentBotState(Long userId, BotState botState);
 
-    BotState getUsersCurrentBotState(int userId);
+    BotState getUsersCurrentBotState(Long userId);
 }
