@@ -33,7 +33,7 @@ public class WebParserServiceImpl implements WebParserService {
                         return pattern.matcher(link).find();
                     })
                     .findAny();
-            if (pageHandler.isEmpty()) {
+            if (!pageHandler.isPresent()) {
                 log.info("Couldn't find link in the pool, " + link);
                 return Optional.empty();
             }

@@ -31,7 +31,7 @@ public class AddItemHandler implements InputMessageHandler {
         Optional<Item> item = webParserService.getItem(message.getText());
         userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SEARCH_COST_FINISHED);
 
-        if (item.isEmpty()) {
+        if (!item.isPresent()) {
             userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.ADD_ITEM);
             return messagesService.getReplyMessage(message.getChatId(), "reply.query.failed");
         }
