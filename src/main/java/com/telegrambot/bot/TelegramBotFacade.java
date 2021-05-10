@@ -2,8 +2,9 @@ package com.telegrambot.bot;
 
 import com.telegrambot.cache.DataCache;
 import com.telegrambot.model.enumeration.BotState;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,11 +15,14 @@ import java.util.regex.Pattern;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TelegramBotFacade {
     private final DataCache userDataCache;
     private final BotStateContext botStateContext;
     private final CallbackQueryFacade callbackQueryFacade;
+
+    @Value("${pattern.url}")
+    private String urlPattern;
 
     public SendMessage handleUpdate(Update update) {
         SendMessage replyMessage = null;
@@ -57,12 +61,12 @@ public class TelegramBotFacade {
                 break;
         }
 
-        String urlPattern = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         Pattern pattern = Pattern.compile(urlPattern);
         Matcher matcher = pattern.matcher(inputMsg);
 
         if (matcher.find()) {
             botState = BotState.ADD_ITEM;
+            message.setText(matcher.group());
         }
 
         userDataCache.setUsersCurrentBotState(userId, botState);

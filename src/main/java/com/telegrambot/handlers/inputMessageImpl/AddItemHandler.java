@@ -9,7 +9,7 @@ import com.telegrambot.model.enumeration.BotState;
 import com.telegrambot.service.ReplyMessagesService;
 import com.telegrambot.service.UserSubscriptionService;
 import com.telegrambot.service.WebParserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AddItemHandler implements InputMessageHandler {
     private final DataCache userDataCache;
     private final WebParserService webParserService;
