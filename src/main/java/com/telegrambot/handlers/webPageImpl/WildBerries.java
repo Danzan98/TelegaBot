@@ -21,7 +21,12 @@ public class WildBerries implements WebPageHandler {
             String brand = elementBrand.ownText();
             String itemName = elementItem.ownText();
             Double price = Double.valueOf(elementPrice.text().replaceAll("\\D+", ""));
-            return new Item(null, brand, itemName, price);
+            return Item
+                    .builder()
+                    .brand(brand)
+                    .name(itemName)
+                    .price(price)
+                    .build();
         }
         catch (Exception e) {
             log.error("Error while parsing wildBerries " + e);

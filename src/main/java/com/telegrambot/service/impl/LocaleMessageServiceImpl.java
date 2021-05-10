@@ -1,5 +1,6 @@
-package com.telegrambot.service;
+package com.telegrambot.service.impl;
 
+import com.telegrambot.service.LocaleMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -7,11 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.Locale;
 
 @Service
-public class LocaleMessageService {
+public class LocaleMessageServiceImpl implements LocaleMessageService {
     private final Locale locale;
     private final MessageSource messageSource;
 
-    public LocaleMessageService(@Value("${localeTag}") String localeTag, MessageSource messageSource) {
+    public LocaleMessageServiceImpl(@Value("${localeTag}") String localeTag, MessageSource messageSource) {
         this.messageSource = messageSource;
         this.locale = Locale.forLanguageTag(localeTag);
     }

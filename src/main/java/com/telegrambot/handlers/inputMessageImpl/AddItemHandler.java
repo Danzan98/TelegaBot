@@ -8,17 +8,19 @@ import com.telegrambot.model.UserSubscription;
 import com.telegrambot.model.enumeration.BotState;
 import com.telegrambot.service.ReplyMessagesService;
 import com.telegrambot.service.UserSubscriptionService;
-import com.telegrambot.service.impl.WebParserServiceImpl;
+import com.telegrambot.service.WebParserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class AddItemHandler implements InputMessageHandler {
     private final DataCache userDataCache;
-    private final WebParserServiceImpl webParserService;
+    private final WebParserService webParserService;
     private final UserSubscriptionService userSubscriptionService;
     private final ReplyMessagesService messagesService;
     private final UserSubscriptionMapper subscriptionMapper;
@@ -26,19 +28,19 @@ public class AddItemHandler implements InputMessageHandler {
     @Override
     public SendMessage handle(Message message) {
         userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SEARCH_COST_STARTED);
-        Item item = webParserService.getItem(message.getText());
+        Optional<Item> item = webParserService.getItem(message.getText());
         userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SEARCH_COST_FINISHED);
 
-        if (item == null) {
+        if (item.isEmpty()) {
             userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.ADD_ITEM);
             return messagesService.getReplyMessage(message.getChatId(), "reply.query.failed");
         }
-
+        Item existItem = item.get();
         if (userSubscriptionService.getUserSubscriptionByIdAndLink(message.getChatId(),
-                item.getLink()).isPresent())
+                existItem.getLink()).isPresent())
             return messagesService.getReplyMessage(message.getChatId(), "reply.query.item.userHasSubscription");
 
-        UserSubscription subscription = subscriptionMapper.toSubscription(item);
+        UserSubscription subscription = subscriptionMapper.toSubscription(existItem);
         subscription.setChatId(message.getChatId());
         userSubscriptionService.saveUserSubscription(subscription);
         return messagesService.getReplyMessage(message.getChatId(),

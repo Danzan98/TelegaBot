@@ -19,7 +19,12 @@ public class Ozon implements WebPageHandler {
             String brand = product.text();
             String itemName = product.text();
             Double price = Double.valueOf(elementPrice.text().replaceAll("\\D+", ""));
-            return new Item(null, brand, itemName, price);
+            return Item
+                    .builder()
+                    .brand(brand)
+                    .name(itemName)
+                    .price(price)
+                    .build();
         }
         catch (Exception e) {
             log.error("Error while parsing ozon " + e);

@@ -21,7 +21,12 @@ public class Lamoda implements WebPageHandler {
             String itemName = elementTitle.child(0).text();
             int amountOfChildren = elementPrice.childrenSize();
             Double price = Double.valueOf(elementPrice.child(amountOfChildren - 1).text().replaceAll("\\D+", ""));
-            return new Item(null, brand, itemName, price);
+            return Item
+                    .builder()
+                    .brand(brand)
+                    .name(itemName)
+                    .price(price)
+                    .build();
         }
         catch (Exception e) {
             log.error("Error while parsing lamoda " + e);

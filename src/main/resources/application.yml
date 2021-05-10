@@ -24,8 +24,8 @@ spring:
     show-sql: true
 
 telegrambot:
-  userName: Testing558Bot
-  botToken: 1067129429:AAGsji9kFmlbkAXSPxR8yZmxzWVOlZh5aBQ
+  userName: To_Check_Price_Bot
+  botToken: 1498817437:AAHAEP7JEkV0XitDC3-dYqqAMiShuGmzVhI
   webHookPath: https://checkingpricebot.herokuapp.com/
 
 subscriptions.processPeriod: 1800000

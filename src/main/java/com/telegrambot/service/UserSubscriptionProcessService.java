@@ -3,10 +3,13 @@ package com.telegrambot.service;
 import com.telegrambot.bot.TelegramBot;
 import com.telegrambot.model.Item;
 import com.telegrambot.model.UserSubscription;
+import com.telegrambot.service.impl.WebParserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -16,7 +19,7 @@ public class UserSubscriptionProcessService {
     private final UserSubscriptionService subscriptionService;
     private final ReplyMessagesService messagesService;
     private final TelegramBot telegramBot;
-    private final WebParserService webParserService;
+    private final WebParserServiceImpl webParserService;
 
     @Scheduled(fixedRateString = "${subscriptions.processPeriod}")
     public void processAllUsersSubscriptions() {
@@ -28,9 +31,9 @@ public class UserSubscriptionProcessService {
     }
 
     private void processSubscription(UserSubscription subscription) {
-        Item item = webParserService.getItem(subscription.getLink());
-        if (item.getPrice() < subscription.getPrice()) {
-            subscription.setPrice(item.getPrice());
+        Optional<Item> item = webParserService.getItem(subscription.getLink());
+        if (item.isPresent() && item.get().getPrice() < subscription.getPrice()) {
+            subscription.setPrice(item.get().getPrice());
             StringBuilder notificationMessage = new StringBuilder(messagesService.getReplyText("subscription.trainTicketsPriceChanges",
                     subscription.getName(), subscription.getPrice(), subscription.getLink()));
             subscriptionService.saveUserSubscription(subscription);

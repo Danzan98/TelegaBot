@@ -1,12 +1,10 @@
 package com.telegrambot.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class Item {
     private String link;
     private String brand;

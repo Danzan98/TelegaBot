@@ -6,6 +6,7 @@ import com.telegrambot.model.UserSubscription;
 import com.telegrambot.model.enumeration.CallbackQueryType;
 import com.telegrambot.service.ReplyMessagesService;
 import com.telegrambot.service.UserSubscriptionService;
+import com.telegrambot.service.impl.ReplyMessagesServiceImpl;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -20,7 +21,7 @@ public class UnsubscribeItemQueryHandler implements CallbackQueryHandler {
     private final TelegramBot telegramBot;
 
     public UnsubscribeItemQueryHandler(UserSubscriptionService subscriptionService,
-                                              ReplyMessagesService messagesService,
+                                       ReplyMessagesServiceImpl messagesService,
                                               @Lazy TelegramBot telegramBot) {
         this.subscriptionService = subscriptionService;
         this.messagesService = messagesService;

@@ -1,12 +1,14 @@
 package com.telegrambot.handlers.inputMessageImpl;
 
 import com.telegrambot.bot.TelegramBot;
+import com.telegrambot.cache.DataCache;
 import com.telegrambot.cache.UserDataCache;
 import com.telegrambot.handlers.InputMessageHandler;
 import com.telegrambot.model.UserSubscription;
 import com.telegrambot.model.enumeration.BotState;
 import com.telegrambot.model.enumeration.CallbackQueryType;
 import com.telegrambot.service.ReplyMessagesService;
+import com.telegrambot.service.impl.ReplyMessagesServiceImpl;
 import com.telegrambot.service.UserSubscriptionService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -20,12 +22,12 @@ import java.util.Optional;
 public class SubscriptionsMenuHandler implements InputMessageHandler {
     private final UserSubscriptionService subscribeService;
     private final TelegramBot telegramBot;
-    private final UserDataCache userDataCache;
+    private final DataCache userDataCache;
     private final ReplyMessagesService messagesService;
 
     public SubscriptionsMenuHandler(UserSubscriptionService subscribeService,
                                     UserDataCache userDataCache,
-                                    ReplyMessagesService messagesService,
+                                    ReplyMessagesServiceImpl messagesService,
                                     @Lazy TelegramBot telegramBot) {
         this.subscribeService = subscribeService;
         this.messagesService = messagesService;

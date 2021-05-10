@@ -1,12 +1,14 @@
-package com.telegrambot.service;
+package com.telegrambot.service.impl;
 
+import com.telegrambot.service.LocaleMessageService;
+import com.telegrambot.service.ReplyMessagesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Service
 @AllArgsConstructor
-public class ReplyMessagesService {
+public class ReplyMessagesServiceImpl implements ReplyMessagesService {
 
     private LocaleMessageService localeMessageService;
 

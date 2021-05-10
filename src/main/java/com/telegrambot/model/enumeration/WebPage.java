@@ -10,7 +10,8 @@ public enum WebPage {
     WILDBERRIES(".*\\.wildberries\\.ru.*"),
 //    ASOS(".*\\.asos\\.com.*"),
     FARFETCH(".*\\.farfetch\\.com.*"),
-    OZON(".*\\.ozon.ru.*");
+    OZON(".*\\.ozon.ru.*"),
+    BRANDSHOP(".*\\.brandshop.ru.*");
 
     private final String url;
 }
